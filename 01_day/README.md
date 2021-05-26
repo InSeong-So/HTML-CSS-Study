@@ -121,3 +121,112 @@
 | <>   | Angle Bracket(앵글 브래킷)               | 꺽쇠괄호       |
 
 - [HTML Entity List](https://www.freeformatter.com/html-entities.html)
+
+## HTML 기본 문법
+
+- 태그
+    > 열리고 닫히는 한 쌍의 구조를 가지고 있다.
+    > - open tag, close tag
+
+    ```html
+    <tag></tag>
+    <tag>CONTENT</tag>
+    ```
+    ```html
+    <h1>h1태그:주제</h1>
+    <p>p태그:본문</p>
+    ```
+
+- 속성(Attribute)과 값(Value)
+
+    ```html
+    <tag 속성="값"></tag>
+    ```
+    ```html
+    <!-- 닫히는 태그가 없으면 빈 태그(Empty tag)라고 부른다. -->
+    <img src="./photo.jpg" alt="사진" />    <!-- alt: alternative, 대체 텍스트 -->
+    <div class="name">홍길동</div>          <!-- div: division, 분할 -->
+    ```
+
+- 부모와 자식 요소
+    > 태그 A가 태그 B의 콘텐츠로 사용되면 태그 B는 태그 A의 부모 요소, 태그 A는 태그 B의 자식 요소라고 한다.
+    > - 부모 요소의 부모 요소를 조상, 상위 요소 등으로 부른다.
+    > - 자식 요소의 자식 요소를 후손, 하위 요소 등으로 부른다.
+    
+    ```html
+    <parent>
+        <child></child>
+    </parent>
+    ```
+
+- 빈 태그
+    > HTML에서 닫히는 개념이 없는 태그
+    ```html
+    <!-- '/'가 없는 빈 태그 -->
+    <tag>
+
+    <!-- '/'가 있는 빈 태그 -->
+    <tag />
+    ```
+
+## HTML 문서의 범위
+- HTML : HTML 문서의 범위를 나타내는 태그
+    - HTML 문서의 전체 범위를 정의
+    - 웹 브라우저가 해석해야 할 HTML 문서가 어디에서 시작하며, 어디에서 끝나는지 알려준다.
+
+    ```html
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <!-- 문서의 정보 -->
+        </head>
+        <body>
+            <!-- 문서의 구조 -->
+        </body>
+    </html>
+    ```
+
+- HEAD : HTML 문서의 정보 범위를 나타내는 태그
+    - 웹 브라우저가 해석해야 할 HTML 문서의 정보 범위를 정의
+    - 여기서 말하는 정보에는 웹 페이지의 제목, 웹 페이지의 문자 인코딩 방식, 연결할 외부 파일의 위치, 웹 페이지를 구조화하기 위한 기본 세팅 값 같은 것들을 말한다.
+    - 다르게는 ‘화면을 구성하기 위한 기본 설정’이라고 표현할 수 있다.
+
+    ```html
+    <head>
+        <!-- title : HTML 문서의 제목을 정의하며 웹 브라우저의 탭에 표시 -->
+        <title>네이버<title>
+        <!-- meta : HTML 문서에 관한 정보(표시 방식, 제작자(소유자), 내용, 키워드 등) -->
+        <!--      : 검색 엔진 또는 브라우저에 제공하며 빈 태그(Empty tag)이다. -->
+        <meta charset="UTF-8"></meta>
+        <!-- -link : 외부 문서를 연결할 때 사용 -->
+        <link rel="stylesheet" href="./css/main.css">
+    <head>
+    ```
+
+- BODY : HTML 문서의 구조 범위를 나타내는 태그
+    - 웹 브라우저가 해석해야 할 HTML 문서의 구조 범위를 정의
+    - 구조는 사용자가 화면을 통해서 볼 수 있는 내용(콘텐츠)의 형태나 레이아웃 등을 의미하며 로고, 헤더, 푸터, 내비게이션, 메뉴, 버튼, 입력창, 팝업, 광고 등 보이는 모든 것들이 구조에 해당된다.
+    - 구조는 BODY 범위 안에서만 생성한다.
+
+    ```html
+    <div>
+        'div'는 'division'의 약자로 분할을 뜻하며 문서의 부분이나 섹션을 정의한다.
+        단순히 특정 범위를 묶는(wrap) 용도로 많이 활용한다.
+    </div>
+
+    <img />
+    HTML에 이미지를 삽입할 때 사용한다.
+    HTML의 img 태그와 CSS 속성에서 이미지를 삽입하는 방법 두가지가 있다.
+    src, alt 속성 두 가지를 반드시 정의해야 한다(웹 표준).
+    ```
+
+- DOCTYPE(DTD, Document Type Definition)
+    ```html
+    <!-- HTML 5 -->
+    <!DOCTYPE html>
+
+    <!-- XHTML 1.0 Transitional -->
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    ```
+  - 마크업 언어에서 문서의 형식을 정의
+  - 웹 브라우저에서 우리가 제공할 HTML 문서를 어떤 HTML 버전의 해석 방식으로 구조화하면 되는지를 알려준다.
