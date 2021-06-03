@@ -8,37 +8,25 @@
   </head>
   <style>
     .container {
-      width: 600px;
       display: grid;
       border: 4px solid lightgray;
-      grid-template-rows: repeat(4, 100px);
-      grid-template-columns: repeat(3, 1fr);
-      border: 4px solid lightgray;
+      grid-template-rows: repeat(2, 100px);
+      grid-template-columns: 1fr [center-start] 1fr [center-end] 1fr;
+      grid-auto-flow: dense;
     }
     .item {
       border: 10px solid red;
-      font-size: 30px;
     }
     .item:nth-child(1) {
-      grid-row: 1 / 3;
-      grid-column: 1 / 3;
-    }
-    .item:nth-child(2) {
-      grid-row: 1 / 3;
-    }
-    .item:nth-child(4) {
-      grid-row: 4 / 5;
-      grid-column: -1 / -3;
+      grid-column: center-start / center-end;
     }
   </style>
-
   <body>
     <div class="container">
       <div class="item">1</div>
       <div class="item">2</div>
       <div class="item">3</div>
       <div class="item">4</div>
-      <div class="item">5</div>
     </div>
   </body>
 </html>

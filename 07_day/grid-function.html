@@ -8,26 +8,21 @@
   </head>
   <style>
     .container {
+      border: 10px solid lightgray;
       display: grid;
-      border: 4px solid lightgray;
-      /*grid-template-rows: 100px 100px;*/
-      grid-template-rows: repeat(2, 100px);
-      /*grid-template-columns: 200px 200px;*/
-      /*grid-template-columns: 1fr 1fr 1fr;*/
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: 100px 100px;
+      grid-template-columns: fit-content(300px) fit-content(300px);
     }
-
     .item {
-      border: 2px dashed red;
+      border: 10px solid red;
     }
   </style>
   <body>
     <div class="container">
-      <div class="item">1</div>
-      <div class="item">2</div>
+      <div class="item">www</div>
+      <div class="item">testtest</div>
       <div class="item">3</div>
       <div class="item">4</div>
-      <div class="item">5</div>
     </div>
   </body>
 </html>
