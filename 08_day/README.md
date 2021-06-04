@@ -1085,3 +1085,490 @@ Sass-App
     color: extract-red(#d55a93);
   }
   ```
+
+## 조건과 반복(Control Directives / Expressions)
+
+### if (함수)
+
+> 조건의 값(true, false)에 따라 두 개의 표현식 중 하나만 반환
+
+- 조건부 삼항 연산자(conditional ternary operator)와 비슷하다.
+
+  1. 조건의 값이 true이면 표현식1 실행
+  2. 조건의 값이 false이면 표현식2 실행
+
+```scss
+if(조건, 표현식1, 표현식2)
+```
+
+- 컴파일 전
+
+  ```scss
+  $width: 555px;
+  div {
+    width: if($width > 300px, $width, null);
+  }
+  ```
+
+- 컴파일 후
+
+  ```css
+  div {
+    width: 555px;
+  }
+  ```
+
+### @if (지시어)
+
+> 조건에 따른 분기 처리가 가능하며, if 문(if statements)과 유사
+
+- 같이 사용할 수 있는 지시어는 @else, if가 있으며 추가 지시어를 사용하면 좀 더 복잡한 조건문을 작성할 수 있다.
+
+```scss
+// @if
+@if (조건) {
+  /* 조건이 참일 때 구문 */
+}
+
+// @if @else
+@if (조건) {
+  /* 조건이 참일 때 구문 */
+} @else {
+  /* 조건이 거짓일 때 구문 */
+}
+
+// @if @else if
+@if (조건1) {
+  /* 조건1이 참일 때 구문 */
+} @else if (조건2) {
+  /* 조건2가 참일 때 구문 */
+} @else {
+  /* 모두 거짓일 때 구문 */
+}
+```
+
+- 조건에 ()는 생략이 가능하다.
+
+  ```scss
+  $bg: true;
+  div {
+    @if $bg {
+      background: url('/images/a.jpg');
+    }
+  }
+  ```
+
+  - 컴파일 전
+
+    ```scss
+    $color: orange;
+    div {
+      @if $color == strawberry {
+        color: #fe2e2e;
+      } @else if $color == orange {
+        color: #fe9a2e;
+      } @else if $color == banana {
+        color: #ffff00;
+      } @else {
+        color: #2a1b0a;
+      }
+    }
+    ```
+
+  - 컴파일 후
+
+    ```css
+    div {
+      color: #fe9a2e;
+    }
+    ```
+
+- 조건에 논리 연산자 and, or, not을 사용할 수 있다.
+
+  - 컴파일 전
+
+    ```scss
+    @function limitSize($size) {
+      @if $size >= 0 and $size <= 200px {
+        @return 200px;
+      } @else {
+        @return 800px;
+      }
+    }
+
+    div {
+      width: limitSize(180px);
+      height: limitSize(340px);
+    }
+    ```
+
+  - 컴파일 후
+
+    ```css
+    div {
+      width: 200px;
+      height: 800px;
+    }
+    ```
+
+- 종합 예제
+
+  - 컴파일 전
+
+    ```scss
+    @mixin pCenter($w, $h, $p: absolute) {
+      @if $p ==
+        absolute or
+        $p ==
+        fixed or not
+        $p ==
+        relative or not
+        $p ==
+        static
+      {
+        width: if(unitless($w), #{$w}px, $w);
+        height: if(unitless($h), #{$h}px, $h);
+        position: $p;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+      }
+    }
+
+    .box1 {
+      @include pCenter(10px, 20px);
+    }
+    .box2 {
+      @include pCenter(50, 50, fixed);
+    }
+    .box3 {
+      @include pCenter(100, 200, relative);
+    }
+    ```
+
+  - 컴파일 후
+
+    ```css
+    .box1 {
+      width: 10px;
+      height: 20px;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+
+    .box2 {
+      width: 50px;
+      height: 50px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      margin: auto;
+    }
+    ```
+
+### @for
+
+> 스타일을 반복적으로 출력
+
+- @for는 through를 사용하는 형식과 to를 사용하는 형식으로 나뉘며 종료 조건이 해석되는 방식이 다르다.
+  - 변수는 관례상 $i를 사용한다.
+
+```scss
+// through
+// 종료 만큼 반복
+@for $변수 from 시작 through 종료 {
+  // 반복 내용
+}
+
+// to
+// 종료 직전까지 반복
+@for $변수 from 시작 to 종료 {
+  // 반복 내용
+}
+```
+
+- 컴파일 전
+
+  ```scss
+  // 1부터 3번 반복
+  @for $i from 1 through 3 {
+    .through:nth-child(#{$i}) {
+      width: 20px * $i;
+    }
+  }
+
+  // 1부터 3 직전까지만 반복(2번 반복)
+  @for $i from 1 to 3 {
+    .to:nth-child(#{$i}) {
+      width: 20px * $i;
+    }
+  }
+  ```
+
+- 컴파일 후
+
+  ```css
+  .through:nth-child(1) {
+    width: 20px;
+  }
+  .through:nth-child(2) {
+    width: 40px;
+  }
+  .through:nth-child(3) {
+    width: 60px;
+  }
+
+  .to:nth-child(1) {
+    width: 20px;
+  }
+  .to:nth-child(2) {
+    width: 40px;
+  }
+  ```
+
+  - to는 주어진 값 직전까지만 반복해야할 경우 유용할 수 있으나 :nth-child()에서 특히 유용하게 사용되는 @for는 일반적으로 through를 사용하길 권장한다.
+
+### @each
+
+> List와 Map 데이터를 반복할 때 사용하며 for in 문과 유사
+
+```scss
+@each $변수 in 데이터 {
+  // 반복 내용
+}
+```
+
+- 컴파일 전
+
+  ```scss
+  // List Data
+  $fruits: (apple, orange, banana, mango);
+
+  .fruits {
+    @each $fruit in $fruits {
+      li.#{$fruit} {
+        background: url('/images/#{$fruit}.png');
+      }
+    }
+  }
+  ```
+
+- 컴파일 후
+
+  ```css
+  .fruits li.apple {
+    background: url('/images/apple.png');
+  }
+  .fruits li.orange {
+    background: url('/images/orange.png');
+  }
+  .fruits li.banana {
+    background: url('/images/banana.png');
+  }
+  .fruits li.mango {
+    background: url('/images/mango.png');
+  }
+  ```
+
+- 반복마다 index 값이 필요한 경우 내장 함수 index()를 사용한다.
+
+  ```scss
+  $fruits: (apple, orange, banana, mango);
+
+  .fruits {
+    @each $fruit in $fruits {
+      $i: index($fruits, $fruit);
+      li:nth-child(#{$i}) {
+        left: 50px * $i;
+      }
+    }
+  }
+  ```
+
+  ```css
+  .fruits li:nth-child(1) {
+    left: 50px;
+  }
+  .fruits li:nth-child(2) {
+    left: 100px;
+  }
+  .fruits li:nth-child(3) {
+    left: 150px;
+  }
+  .fruits li:nth-child(4) {
+    left: 200px;
+  }
+  ```
+
+- 동시에 여러 개의 List 데이터를 반복 처리할 수도 있으나 각 데이터의 Length가 같아야 한다.
+
+  ```scss
+  $apple: (apple, korea);
+  $orange: (orange, china);
+  $banana: (banana, japan);
+
+  @each $fruit, $country in $apple, $orange, $banana {
+    .box-#{$fruit} {
+      background: url('/images/#{$country}.png');
+    }
+  }
+  ```
+
+  ```css
+  .box-apple {
+    background: url('/images/korea.png');
+  }
+  .box-orange {
+    background: url('/images/china.png');
+  }
+  .box-banana {
+    background: url('/images/japan.png');
+  }
+  ```
+
+- Map 데이터를 반복할 경우 하나의 데이터에 두 개의 변수가 필요하다.
+
+  ```scss
+  @each $key변수, $value변수 in 데이터 {
+    // 반복 내용
+  }
+  ```
+
+  ```scss
+  $fruits-data: (
+    apple: korea,
+    orange: china,
+    banana: japan,
+  );
+
+  @each $fruit, $country in $fruits-data {
+    .box-#{$fruit} {
+      background: url('/images/#{$country}.png');
+    }
+  }
+  ```
+
+  ```css
+  .box-apple {
+    background: url('/images/korea.png');
+  }
+  .box-orange {
+    background: url('/images/china.png');
+  }
+  .box-banana {
+    background: url('/images/japan.png');
+  }
+  ```
+
+### ~~@while~~
+
+## 내장 함수(Built-in Functions)
+
+> [Sass Built-in Functions](https://poiemaweb.com/sass-built-in-function)
+
+- []는 선택 가능한 인수(argument)
+- Zero-based numbering을 사용하지 않는다.
+
+### 색상(RGB / HSL / Opacity) 함수
+
+- mix($color1, $color2) : 두 개의 색을 섞는다.
+
+- lighten($color, $amount) : 더 밝은색을 만든다.
+
+- darken($color, $amount) : 더 어두운색을 만든다.
+
+- saturate($color, $amount) : 색상의 채도를 올린다.
+
+- desaturate($color, $amount) : 색상의 채도를 낮춘다.
+
+- grayscale($color) : 색상을 회색으로 변환한다.
+
+- invert($color) : 색상을 반전시킨다.
+
+- rgba($color, $alpha) : 색상의 투명도를 변경한다.
+
+- opacify($color, $amount) / fade-in($color, $amount) : 색상을 더 불투명하게 만든다.
+
+- transparentize($color, $amount) / fade-out($color, $amount) : 색상을 더 투명하게 만든다.
+
+### 문자(String) 함수
+
+- unquote($string) : 문자에서 따옴표를 제거한다.
+
+- quote($string) : 문자에 따옴표를 추가한다.
+
+- str-insert($string, $insert, $index) : 문자의 index번째에 특정 문자를 삽입한다.
+
+- str-index($string, $substring) : 문자에서 특정 문자의 첫 index를 반환한다.
+
+- str-slice($string, $start-at, [$end-at]) : 문자에서 특정 문자(몇 번째 글자부터 몇 번째 글자까지)를 추출한다.
+
+- to-upper-case($string) : 문자를 대문자를 변환한다.
+
+- to-lower-case($string) : 문자를 소문자로 변환한다.
+
+### 숫자(Number) 함수
+
+- percentage($number) : 숫자(단위 무시)를 백분율로 변환한다.
+
+- round($number) : 정수로 반올림한다.
+
+- ceil($number) : 정수로 올림한다.
+
+- floor($number) : 정수로 내림(버림)한다.
+
+- abs($number) : 숫자의 절대 값을 반환한다.
+
+- min($numbers…) : 숫자 중 최소 값을 찾는다.
+
+- max($numbers…) : 숫자 중 최대 값을 찾는다.
+
+- random() : 0 부터 1 사이의 난수를 반환한다.
+
+### List 함수
+
+> 모든 List 내장 함수는 기존 List 데이터를 갱신하지 않고 새 List 데이터를 반환한다.
+>
+> - 모든 List 내장 함수는 Map 데이터에서도 사용할 수 있는다.
+
+- length($list) : List의 개수를 반환한다.
+
+- nth($list, $n) : List에서 n번째 값을 반환한다.
+
+- set-nth($list, $n, $value) : List에서 n번째 값을 다른 값으로 변경한다.
+
+- join($list1, $list2, [$separator]) : 두 개의 List를 하나로 결합한다.
+
+- zip($lists…) : 여러 List들을 하나의 다차원 List로 결합한다.
+
+- index($list, $value) : List에서 특정 값의 index를 반환한다.
+
+### Map 함수
+
+> 모든 Map 내장 함수는 기존 Map 데이터를 갱신하지 않고 새 Map 데이터를 반환한다.
+
+- map-get($map, $key) : Map에서 특정 key의 value를 반환한다.
+
+- map-merge($map1, $map2) : 두 개의 Map을 병합하여 새로운 Map를 만든다.
+
+- map-keys($map) : Map에서 모든 key를 List로 반환한다.
+
+- map-values($map) : Map에서 모든 value를 List로 반환한다.
+
+### 관리(Introspection) 함수
+
+- variable-exists(name) : 변수가 현재 범위에 존재하는지 여부를 반환한다(인수는 $없이 변수의 이름만 사용).
+
+- unit($number) : 숫자의 단위를 반환한다.
+
+- unitless($number) : 숫자에 단위가 있는지 여부를 반환한다.
+
+- comparable($number1, $number2) : 두 개의 숫자가 연산 가능한지 여부를 반환한다.
